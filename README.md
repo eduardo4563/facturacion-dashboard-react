@@ -58,16 +58,7 @@ Contraseña: 123456
 - Emisión de facturas
 - Diseño responsive
 
-## 📸 Screenshots sugeridos
 
-Guarda capturas en `/docs`:
-
-```txt
-docs/login.png
-docs/dashboard.png
-docs/clientes.png
-docs/facturas.png
-```
 
 ## 🎯 Descripción para GitHub
 
