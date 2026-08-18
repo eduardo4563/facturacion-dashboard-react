@@ -99,6 +99,34 @@ export function Facturas({
     }
   }
 
+  async function verFactura(id: number) {
+    const ventana = window.open("", "_blank");
+
+    if (!ventana) {
+      toast.error(
+        "El navegador bloqueó la nueva ventana. Permite ventanas emergentes para ver la factura."
+      );
+      return;
+    }
+
+    ventana.document.write(
+      "<p style=\"font-family:Arial,sans-serif;padding:24px\">Cargando factura...</p>"
+    );
+
+    try {
+      const html = await facturasApi.obtenerHtml(id);
+
+      ventana.document.open();
+      ventana.document.write(html);
+      ventana.document.close();
+    } catch (err: any) {
+      ventana.close();
+      toast.error(
+        err?.response?.data?.message || "No se pudo abrir la factura."
+      );
+    }
+  }
+
   return (
     <>
       <ConfirmDialog
@@ -395,14 +423,14 @@ export function Facturas({
                   )}
 
                   <div className="mt-5 flex flex-wrap gap-2">
-                    <a
-                      href={facturasApi.facturaHtmlUrl(f.id)}
-                      target="_blank"
+                    <button
+                      type="button"
+                      onClick={() => verFactura(f.id)}
                       className="btn-primary"
                     >
                       <ExternalLink size={16} />
                       Ver factura
-                    </a>
+                    </button>
 
                     {!f.anulada && (
                       <button
