@@ -1,4 +1,3 @@
-import { http } from "./http";
 import type {
   Cliente,
   DashboardResumen,
@@ -9,6 +8,7 @@ import type {
   TopCliente,
   VentaMensual,
 } from "../types";
+import { http } from "./http";
 
 export const authApi = {
   login: async (username: string, password: string) => {
@@ -16,6 +16,7 @@ export const authApi = {
       username,
       password,
     });
+
     return data;
   },
 };
@@ -88,6 +89,7 @@ export const facturasApi = {
       clienteId,
       detalles,
     });
+
     return data;
   },
 
@@ -96,7 +98,11 @@ export const facturasApi = {
     return data;
   },
 
-  facturaHtmlUrl: (id: number) => {
-    return `http://localhost:5000/api/Facturas/${id}/html`;
+  obtenerHtml: async (id: number) => {
+    const { data } = await http.get<string>(`/Facturas/${id}/html`, {
+      responseType: "text",
+    });
+
+    return data;
   },
 };
