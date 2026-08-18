@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "./api/http";
 import { clientesApi, facturasApi, productosApi } from "./api/services";
 import { Layout } from "./components/Layout";
-import { ToastProvider, useToast } from "./components/Toast";
 import { DashboardSkeleton } from "./components/Skeleton";
+import { ToastProvider, useToast } from "./components/Toast";
 import { useAuth } from "./context/AuthContext";
 import { Clientes } from "./pages/Clientes";
 import { Dashboard } from "./pages/Dashboard";
@@ -25,19 +26,22 @@ function AppContent() {
 
   async function loadData() {
     if (!isAuthenticated) return;
+
     try {
       setLoading(true);
+
       const [c, p, f] = await Promise.all([
         clientesApi.listar(),
         productosApi.listar(),
         facturasApi.listar(),
       ]);
+
       setClientes(c);
       setProductos(p);
       setFacturas(f);
     } catch {
       toast.error(
-        "No se pudo conectar con la API. Verifica que tu backend esté corriendo en http://localhost:5000."
+        `No se pudo conectar con la API. Verifica la configuración VITE_API_URL (${API_URL}).`
       );
     } finally {
       setLoading(false);
@@ -49,7 +53,9 @@ function AppContent() {
     loadData();
   }, [isAuthenticated]);
 
-  if (!isAuthenticated) return <Login />;
+  if (!isAuthenticated) {
+    return <Login />;
+  }
 
   return (
     <Layout tab={tab} setTab={setTab}>
@@ -64,12 +70,15 @@ function AppContent() {
               facturas={facturas}
             />
           )}
+
           {tab === "clientes" && (
             <Clientes clientes={clientes} onReload={loadData} />
           )}
+
           {tab === "productos" && (
             <Productos productos={productos} onReload={loadData} />
           )}
+
           {tab === "facturas" && (
             <Facturas
               clientes={clientes}
